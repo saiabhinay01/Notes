@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+</head>
+<style>
+    li:hover{
+        background-color: white;
+        border-radius: 10px;
+        display: inline;
+    }
+    .nn{
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-size: large;
+        color: white;
+        cursor: pointer;
+    }
+    li:hover .nn{
+        font-size:x-large;
+        color: black;
+    }
+    li:hover .dd{
+        display:inline-block;
+        font-size:larger;
+    }
+    li{
+        width:fit-content;
+        align-items: center;
+        padding: 5px 0px 5px 5px;
+        background-color: transparent;
+        font-size: larger;
+        color: white;
+    }
+    .dd{
+        background-color: transparent;
+        border-color: transparent;
+        cursor: pointer;
+        display: none;
+    }
+    dialog{
+        bottom: 20%;
+        right:20%;
+    }
+
+</style>
+<body style="background-color:black;padding: 50px;">
+    <h1 style="color: grey;font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-decoration: underline;">Your Notes:</h1>
+    <button style="background-color: white;
+    color:black;
+    border-color: transparent;
+    border-radius: 10px;
+    width: 80px;height: 30px;
+    text-decoration: solid;
+    box-shadow: 20px;
+    cursor: pointer;"
+    onclick="newshow()"
+    onmouseover="this.style.color='white';this.style.backgroundColor='grey';"
+    onmouseleave="this.style.color='black';this.style.backgroundColor='white'">+ Add new</button>
+    <input type="text" id="search" onkeyup="search()" placeholder="search...">
+    <ul id="list" style="list-style-type: disc;">
+    </ul>
+    <dialog id="dialog">
+        <input type="text" id="notestitle" placeholder="Title">
+        <textarea id="note" placeholder="Enter Ur notes..." style="resize: both;overflow: auto;"></textarea>
+        <br>
+        <button type="button" onclick="save()">Save</button>
+        <button type="button" onclick="cancel()">Cancel</button>
+    </dialog>
+    <dialog id="view">
+        <input type="viewtitle" id="notestitle" placeholder="Title">
+        <textarea id="viewnote" placeholder="Enter Ur notes..." style="resize: both;overflow: auto;"></textarea>
+        <br>
+        <button type="button" onclick="update()">Update</button>
+        <button type="button" onclick="exit()">Cancel</button>
+    </dialog>
+    <script>
+        const popup = document.getElementById('dialog');
+        const view =  document.getElementById('view');
+        const vn = document.getElementById('viewnote');
+        const vt = document.getElementById('viewtitle');
+        const title = document.getElementById('notestitle');
+        const notes = document.getElementById('note');
+        const list = document.getElementById('list');
+        let cli=null;
+        function search(){
+            let s = document.getElementById('search').value.toLowerCase();
+            let ll = document.querySelectorAll('li')
+            ll.forEach(f=>{
+                if(f.textContent.toLowerCase().includes(s)){
+                    f.style.display="";
+                }
+                else{
+                    f.style.display="none";
+                }
+            });
+        }
+        function newshow(){
+            popup.style.display='flex';
+            popup.style.flexDirection='column';
+            popup.showModal();
+            notes.style.height='auto';
+            title.focus();
+            title.value="";
+            notes.value="";
+        }
+        function show(nn,nono,li){
+            cli=li;
+            view.style.display='flex';
+            view.style.flexDirection='column';
+            view.showModal();
+            vn.style.height='auto';
+            vt.focus();
+            vt.value=nn.textContent;
+            vn.value=nono.textContent;
+        }
+        function save(){
+            if(title.value===""){
+               popup.style.display='none';
+               popup.close();
+               return;
+            }
+            const li = document.createElement('li');
+
+            const nn = document.createElement('span');
+            nn.className="nn";
+            nn.textContent = title.value;
+
+            const nono = document.createElement('span');
+            nono.style.display='none';
+            nono.textContent=notes.value;
+            
+            const db=document.createElement('button');
+            db.textContent="❌";
+            db.className="dd";
+            db.onclick=()=> li.remove();;
+            li.appendChild(nn);
+            li.appendChild(db);
+            li.appendChild(nono);
+            list.appendChild(li);
+            nn.onclick=() => show(nn,nono,li);
+            popup.style.display='none';
+            popup.close();
+        }
+        function update(){
+            cli.Children[1]=vt.textContent;
+            cli.Children[2]=vn.textContent;
+            view.style.display='none';
+            view.close();
+        }
+        function cancel(){
+            popup.style.display='none';
+            popup.close();
+        }
+        function exit(){
+            view.style.display='none';
+            view.close();
+        }
+    </script>
+</body>
+</html>
